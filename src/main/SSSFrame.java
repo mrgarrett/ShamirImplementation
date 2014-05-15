@@ -33,9 +33,12 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private JTextArea textArea;
 	private JComboBox comboBox;
 	private JComboBox comboBox_1;
+	private JComboBox comboBox_2;
 	private BigInteger prime;
 	private Shamir shamir;
 	private SecretShare[] s;
+	private int threshold;
+	private int numShares; 
     //private final Random random;
     //private static final int CERTAINTY = 50;
 	/**
@@ -133,7 +136,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
 		
-		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2 = new JComboBox();
 		comboBox_2.setEditable(true);
 		comboBox_2.setBounds(58, 215, 52, 27);
 		comboBox_2.addItem('1');
@@ -153,23 +156,31 @@ public class SSSFrame extends JFrame implements ActionListener {
 				
 	}
 	public void actionPerformed(ActionEvent e) {
+		StringBuilder builder;
 		if (e.getSource() == btnRecalculate) {
-			//textField_1.setText("Working!");
-			prime = shamir.getPrime();
-			BigInteger result = shamir.combine(s, prime);
-			String something = new String(result.toString());
-			textField_1.setText(something);
-			System.out.println("Recalculating got: "+ something);
+			int thresholdCombine = Integer.parseInt(comboBox_2.getSelectedItem().toString());
+			System.out.println("THC: " + thresholdCombine + " TH: " + threshold);
+			if ( thresholdCombine < threshold) {
+				textField_1.setText("Too few shares.");
+			} else if ( thresholdCombine > numShares) {
+				textField_1.setText("Exceeded shares.");
+			} else {
+				prime = shamir.getPrime();
+				BigInteger result = shamir.combine(s, prime);
+				String something = new String(result.toString());
+				textField_1.setText(something);
+				System.out.println("Recalculating got: "+ something);
+			}
 		}
 		if (e.getSource() == btnCalculate) {
-			int numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
-			int threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
+			numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
+			threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
 			Integer secret = Integer.parseInt(textField.getText());
 			BigInteger secretInt =  BigInteger.valueOf(secret.intValue());
 
 			shamir = new Shamir(threshold, numShares);
 			s = shamir.split(secretInt);
-			StringBuilder builder = new StringBuilder();
+			builder = new StringBuilder();
 			for (SecretShare share : s){
 				builder.append(share.toString()+"\n");
 			}

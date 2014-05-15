@@ -67,7 +67,7 @@ public final class Shamir {
 
                 accum = accum.add(t2).mod(prime);
             }
-            shares[i - 1] = new SecretShare(i - 1, accum);
+            shares[i-1] = new SecretShare(i, accum);
             System.out.println(shares[i - 1]);
         }
 
