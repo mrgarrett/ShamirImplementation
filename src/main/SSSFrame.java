@@ -1,13 +1,10 @@
 package main;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -17,12 +14,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
 import main.Shamir.SecretShare;
-import main.Shamir.*;
 
+@SuppressWarnings("serial")
 public class SSSFrame extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
@@ -39,8 +34,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private SecretShare[] s;
 	private int threshold;
 	private int numShares; 
-    //private final Random random;
-    //private static final int CERTAINTY = 50;
+ 
 	/**
 	 * Launch the application.
 	 */
@@ -150,7 +144,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 		lblRecoveredSecret.setBounds(264, 198, 142, 16);
 		contentPane.add(lblRecoveredSecret);
 		
-		JLabel lblThreshold = new JLabel("Threshold");
+		JLabel lblThreshold = new JLabel("Recombine");
 		lblThreshold.setBounds(48, 198, 77, 16);
 		contentPane.add(lblThreshold);
 				
@@ -158,18 +152,16 @@ public class SSSFrame extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		StringBuilder builder;
 		if (e.getSource() == btnRecalculate) {
-			int thresholdCombine = Integer.parseInt(comboBox_2.getSelectedItem().toString());
-			System.out.println("THC: " + thresholdCombine + " TH: " + threshold);
-			if ( thresholdCombine < threshold) {
+			int recombine = Integer.parseInt(comboBox_2.getSelectedItem().toString());
+			if ( recombine < threshold) {
 				textField_1.setText("Too few shares.");
-			} else if ( thresholdCombine > numShares) {
+			} else if ( recombine > numShares) {
 				textField_1.setText("Exceeded shares.");
 			} else {
 				prime = shamir.getPrime();
 				BigInteger result = shamir.combine(s, prime);
 				String something = new String(result.toString());
 				textField_1.setText(something);
-				System.out.println("Recalculating got: "+ something);
 			}
 		}
 		if (e.getSource() == btnCalculate) {
