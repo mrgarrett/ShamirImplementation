@@ -23,6 +23,6 @@ public final class SecretShare {
 
     @Override
     public String toString() {
-        return "SecretShare [Person: " + num + ", Share:" + share + "]";
+        return "Person:" + num + "| Share:" + share ;
     }
 }

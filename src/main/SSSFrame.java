@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class SSSFrame extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+    private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JButton btnRecalculate;
@@ -28,12 +28,13 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private int numShares; 
 	private JLabel[] shares;
 	private JCheckBox[] sharesBox;
-	private ArrayList<String> checked;
+	private static ArrayList<String> checked;
  
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+        checked = new ArrayList<String>();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -158,6 +159,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 						checked.add(shares[i].getText());
 					}
 				}
+                System.out.println(checked.toString());
 				BigInteger result = shamir.combine(checked);
 				String something = new String(result.toString());
 				textField_1.setText(something);

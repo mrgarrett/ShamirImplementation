@@ -69,18 +69,28 @@ public final class Shamir {
     }
 
     public BigInteger combine(ArrayList shares) {
-        BigInteger accum = BigInteger.ZERO;
 
+        BigInteger accum = BigInteger.ZERO;
         for (int i = 0; i < k; i++) {
             BigInteger num = BigInteger.ONE;
             BigInteger num2 = BigInteger.ONE;
             for (int j = 0; j < k; j++) {
                 if (i != j) {
-                    num = num.multiply(BigInteger.valueOf(-j - 1)).mod(this.prime);
-                    num2 = num2.multiply(BigInteger.valueOf(i - j)).mod(this.prime);
+                    BigInteger first = BigInteger.valueOf(-j - 1);
+                    BigInteger second = BigInteger.valueOf(i - j);
+
+
+                    num = num.multiply(first).mod(this.prime);
+                    num2 = num2.multiply(second).mod(this.prime);
                 }
             }
-            final BigInteger value = this.sharedSecret[i].getShare();
+            String shareString[] = ((String) shares.get(i)).split(":");
+            System.out.println(shareString.toString());
+            int personNum = Integer.parseInt(shareString[1].replaceAll("[^\\d.]", ""));
+            int personSec = Integer.parseInt(shareString[2].replaceAll("[^\\d.]", ""));
+            System.out.println("testing code number is "+ personNum + " and sec is " + personSec );
+//            final BigInteger value = this.sharedSecret[i].getShare();
+            final BigInteger value = BigInteger.valueOf(personSec);
             final BigInteger tmp = value.multiply(num).multiply(num2.modInverse(this.prime)).mod(this.prime);
             accum = accum.add(this.prime).add(tmp).mod(this.prime);
         }
