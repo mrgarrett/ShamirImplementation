@@ -67,7 +67,7 @@ public final class Shamir {
         return prime;
     }
 
-    public BigInteger combine(final SecretShare[] shares) {
+    public BigInteger combine() {
         BigInteger accum = BigInteger.ZERO;
         for (int i = 0; i < k; i++) {
             BigInteger num = BigInteger.ONE;
@@ -78,7 +78,7 @@ public final class Shamir {
                     num2 = num2.multiply(BigInteger.valueOf(i - j)).mod(this.prime);
                 }
             }
-            final BigInteger value = shares[i].getShare();
+            final BigInteger value = this.sharedSecret[i].getShare();
             final BigInteger tmp = value.multiply(num).multiply(num2.modInverse(this.prime)).mod(this.prime);
             accum = accum.add(this.prime).add(tmp).mod(this.prime);
         }

@@ -148,7 +148,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 			} else if ( recombine > numShares) {
 				textField_1.setText("Exceeded shares.");
 			} else {
-				BigInteger result = shamir.combine(secretShares);
+				BigInteger result = shamir.combine();
 				String something = new String(result.toString());
 				textField_1.setText(something);
 			}
