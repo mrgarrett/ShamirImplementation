@@ -2,6 +2,7 @@ package main;
 
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -67,8 +68,9 @@ public final class Shamir {
         return prime;
     }
 
-    public BigInteger combine() {
+    public BigInteger combine(ArrayList shares) {
         BigInteger accum = BigInteger.ZERO;
+
         for (int i = 0; i < k; i++) {
             BigInteger num = BigInteger.ONE;
             BigInteger num2 = BigInteger.ONE;

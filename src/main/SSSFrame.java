@@ -2,10 +2,12 @@ package main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class SSSFrame extends JFrame implements ActionListener {
@@ -15,7 +17,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private JTextField textField_1;
 	private JButton btnRecalculate;
 	private JButton btnCalculate;
-	private JTextArea textArea;
+	private JPanel textArea;
 	private JComboBox comboBox;
 	private JComboBox comboBox_1;
 	private JComboBox comboBox_2;
@@ -24,6 +26,9 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private SecretShare[] secretShares;
 	private int threshold;
 	private int numShares; 
+	private JLabel[] shares;
+	private JCheckBox[] sharesBox;
+	private ArrayList<String> checked;
  
 	/**
 	 * Launch the application.
@@ -101,8 +106,8 @@ public class SSSFrame extends JFrame implements ActionListener {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		textArea = new JTextArea();
-		textArea.setBounds(23, 117, 404, 69);
+		textArea = new JPanel(new FlowLayout());
+		textArea.setPreferredSize(new Dimension(404, 1000));
 		//contentPane.add(textArea);
 		
 		JScrollPane scroll = new JScrollPane (textArea, 
@@ -148,9 +153,15 @@ public class SSSFrame extends JFrame implements ActionListener {
 			} else if ( recombine > numShares) {
 				textField_1.setText("Exceeded shares.");
 			} else {
-				BigInteger result = shamir.combine();
+				for(int i = 0; i < sharesBox.length; i++){
+					if(sharesBox[i].isSelected()){
+						checked.add(shares[i].getText());
+					}
+				}
+				BigInteger result = shamir.combine(checked);
 				String something = new String(result.toString());
 				textField_1.setText(something);
+				
 			}
 		}
 		if (e.getSource() == btnCalculate) {
@@ -158,17 +169,29 @@ public class SSSFrame extends JFrame implements ActionListener {
 			threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
 			Integer secret = Integer.parseInt(textField.getText());
 			BigInteger secretInt =  BigInteger.valueOf(secret.intValue());
-
+			shares = new JLabel[numShares];
+			sharesBox = new JCheckBox[numShares];
+			
 			shamir = new Shamir(threshold, numShares, secretInt);
 			secretShares = shamir.getSecrets();
 			builder = new StringBuilder();
+			int i = 0;
 			for (SecretShare share : secretShares){
-				builder.append(share.toString()+"\n");
+				//builder.append(share.toString()+"\n");
+				shares[i] = new JLabel(share.toString()+"\n");
+				sharesBox[i] = new JCheckBox();
+				i++;
 			}
 			if (numShares < threshold) {
-				textArea.setText("Shares cannot be less than threshold!");
+				JOptionPane.showMessageDialog(null, "Shares cannot be less than threshold!");
+				//textArea.setText("Shares cannot be less than threshold!");
 			}else{
-				textArea.setText(builder.toString());
+				//textArea.setText(builder.toString());
+				for(int j=0; j < numShares; j++){
+					textArea.add(shares[j]);
+					textArea.add(sharesBox[j]);
+					textArea.revalidate();
+				}
 			}
         }
 	}
