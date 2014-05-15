@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -34,6 +35,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private JComboBox comboBox_1;
 	private BigInteger prime;
 	private Shamir shamir;
+	private SecretShare[] s;
     //private final Random random;
     //private static final int CERTAINTY = 50;
 	/**
@@ -113,11 +115,14 @@ public class SSSFrame extends JFrame implements ActionListener {
 		textField.setColumns(10);
 		
 		textArea = new JTextArea();
-		Border border = BorderFactory.createLineBorder(Color.BLACK, 5);
 		textArea.setBounds(23, 117, 404, 69);
-		textArea.setBorder(border);
-		contentPane.add(textArea);
+		//contentPane.add(textArea);
 		
+		JScrollPane scroll = new JScrollPane (textArea, 
+				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		scroll.setSize(117, 23);
+		scroll.setBounds(23, 117, 404, 69);
+		contentPane.add(scroll);
 		btnRecalculate = new JButton("Recalculate");
 		btnRecalculate.setBounds(127, 214, 117, 29);
 		contentPane.add(btnRecalculate);
@@ -149,31 +154,29 @@ public class SSSFrame extends JFrame implements ActionListener {
 	}
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnRecalculate) {
-			textField_1.setText("Working!");
-			//BigInteger prime = sh.getPrime();
-			//BigInteger result = sh.combine(shares, prime);
+			//textField_1.setText("Working!");
+			prime = shamir.getPrime();
+			BigInteger result = shamir.combine(s, prime);
+			String something = new String(result.toString());
+			textField_1.setText(something);
+			System.out.println("Recalculating got: "+ something);
 		}
 		if (e.getSource() == btnCalculate) {
 			int numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
 			int threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
-			// BigInt
 			Integer secret = Integer.parseInt(textField.getText());
 			BigInteger secretInt =  BigInteger.valueOf(secret.intValue());
 
-
 			shamir = new Shamir(threshold, numShares);
-			SecretShare[] s = shamir.split(secretInt);
+			s = shamir.split(secretInt);
 			StringBuilder builder = new StringBuilder();
 			for (SecretShare share : s){
 				builder.append(share.toString()+"\n");
 			}
 			if (numShares < threshold) {
-				//JOptionPane.showMessageDialog(null, "Shares cannot be less than threshold!");
 				textArea.setText("Shares cannot be less than threshold!");
 			}else{
-				//textArea.setText(textField.getText());
 				textArea.setText(builder.toString());
-			    //split(secret);
 			}
         }
 	}

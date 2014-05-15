@@ -113,7 +113,7 @@ public final class Shamir {
             }
         }
     }
-
+/*
     public static void main(final String[] args) {
         final Shamir shamir = new Shamir(3, 5);
         final BigInteger secret = new BigInteger("1234567890");
@@ -122,4 +122,5 @@ public final class Shamir {
         final Shamir shamir2 = new Shamir(3, 5);
         final BigInteger result = shamir2.combine(shares, prime);
     }
+*/
 }
