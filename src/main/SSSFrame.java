@@ -1,21 +1,11 @@
 package main;
 
-import java.awt.EventQueue;
-import java.awt.Font;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import main.Shamir.SecretShare;
 
 @SuppressWarnings("serial")
 public class SSSFrame extends JFrame implements ActionListener {
@@ -31,7 +21,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private JComboBox comboBox_2;
 	private BigInteger prime;
 	private Shamir shamir;
-	private SecretShare[] s;
+	private SecretShare[] secretShares;
 	private int threshold;
 	private int numShares; 
  
@@ -63,7 +53,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Shamir's Secret Sharing");
+		JLabel lblNewLabel = new JLabel("Shamir'secretShares Secret Sharing");
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(6, 6, 438, 23);
@@ -158,8 +148,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 			} else if ( recombine > numShares) {
 				textField_1.setText("Exceeded shares.");
 			} else {
-				prime = shamir.getPrime();
-				BigInteger result = shamir.combine(s, prime);
+				BigInteger result = shamir.combine(secretShares);
 				String something = new String(result.toString());
 				textField_1.setText(something);
 			}
@@ -170,10 +159,10 @@ public class SSSFrame extends JFrame implements ActionListener {
 			Integer secret = Integer.parseInt(textField.getText());
 			BigInteger secretInt =  BigInteger.valueOf(secret.intValue());
 
-			shamir = new Shamir(threshold, numShares);
-			s = shamir.split(secretInt);
+			shamir = new Shamir(threshold, numShares, secretInt);
+			secretShares = shamir.getSecrets();
 			builder = new StringBuilder();
-			for (SecretShare share : s){
+			for (SecretShare share : secretShares){
 				builder.append(share.toString()+"\n");
 			}
 			if (numShares < threshold) {

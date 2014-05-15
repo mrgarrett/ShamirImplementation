@@ -1,7 +1,9 @@
 package main;
 
+
 import java.math.BigInteger;
 import java.util.Random;
+
 
 public final class Shamir {
     // Declare Variables
@@ -10,41 +12,23 @@ public final class Shamir {
     private final int n;
     private final Random random;
     private static final int CERTAINTY = 50;
+    private  BigInteger secret = null;
+    private SecretShare[] sharedSecret;
 
     // Cosnstructor
-    public Shamir(final int k, final int n) {
+    public Shamir(final int k, final int n, final BigInteger secret) {
         this.k = k;
         this.n = n;
+        this.secret = secret;
         random = new Random();
+        this.prime = this.getPrime();
+        this.split();
+
     }
 
-    public final class SecretShare {
-        // Declare Variables
-        private final int num;
-        private final BigInteger share;
 
-        // Constructor
-        public SecretShare(int num, BigInteger share) {
-            this.num = num;
-            this.share = share;
-        }
 
-        // Define getters
-        public int getNum() {
-            return num;
-        }
-
-        public BigInteger getShare() {
-            return share;
-        }
-
-        @Override
-        public String toString() {
-            return "SecretShare [Person: " + num + ", Share:" + share + "]";
-        }
-    }
-
-    public SecretShare[] split(final BigInteger secret) {
+    private SecretShare[] split() {
         final int modLength = secret.bitLength() + 1;
         
         // Generate Prime number for mod; ensures security
@@ -71,27 +55,32 @@ public final class Shamir {
             }
             shares[i-1] = new SecretShare(i, accum);
         }
+        this.sharedSecret = shares;
         return shares;
     }
 
-    public BigInteger getPrime() {
+    public SecretShare[] getSecrets(){
+        return this.sharedSecret;
+    }
+
+    private BigInteger getPrime() {
         return prime;
     }
 
-    public BigInteger combine(final SecretShare[] shares, final BigInteger primeNum) {
+    public BigInteger combine(final SecretShare[] shares) {
         BigInteger accum = BigInteger.ZERO;
         for (int i = 0; i < k; i++) {
             BigInteger num = BigInteger.ONE;
             BigInteger num2 = BigInteger.ONE;
             for (int j = 0; j < k; j++) {
                 if (i != j) {
-                    num = num.multiply(BigInteger.valueOf(-j - 1)).mod(primeNum);
-                    num2 = num2.multiply(BigInteger.valueOf(i - j)).mod(primeNum);
+                    num = num.multiply(BigInteger.valueOf(-j - 1)).mod(this.prime);
+                    num2 = num2.multiply(BigInteger.valueOf(i - j)).mod(this.prime);
                 }
             }
             final BigInteger value = shares[i].getShare();
-            final BigInteger tmp = value.multiply(num).multiply(num2.modInverse(primeNum)).mod(primeNum);
-            accum = accum.add(primeNum).add(tmp).mod(primeNum);
+            final BigInteger tmp = value.multiply(num).multiply(num2.modInverse(this.prime)).mod(this.prime);
+            accum = accum.add(this.prime).add(tmp).mod(this.prime);
         }
         return accum;
     }
