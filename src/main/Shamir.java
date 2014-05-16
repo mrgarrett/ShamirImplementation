@@ -89,8 +89,8 @@ public final class Shamir {
             int personNum = Integer.parseInt(shareString[1].replaceAll("[^\\d.]", ""));
             int personSec = Integer.parseInt(shareString[2].replaceAll("[^\\d.]", ""));
             System.out.println("testing code number is "+ personNum + " and sec is " + personSec );
-//            final BigInteger value = this.sharedSecret[i].getShare();
-            final BigInteger value = BigInteger.valueOf(personSec);
+            final BigInteger value = this.sharedSecret[i].getShare();
+//            final BigInteger value = BigInteger.valueOf(personSec);
             final BigInteger tmp = value.multiply(num).multiply(num2.modInverse(this.prime)).mod(this.prime);
             accum = accum.add(this.prime).add(tmp).mod(this.prime);
         }
