@@ -20,7 +20,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 	private JPanel textArea;
 	private JComboBox comboBox;
 	private JComboBox comboBox_1;
-	private JComboBox comboBox_2;
+	//private JComboBox comboBox_2;
 	private BigInteger prime;
 	private Shamir shamir;
 	private SecretShare[] secretShares;
@@ -107,14 +107,17 @@ public class SSSFrame extends JFrame implements ActionListener {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		textArea = new JPanel(new FlowLayout());
-		textArea.setPreferredSize(new Dimension(404, 1000));
+		textArea = new JPanel();
+		GridBagLayout gbl = new GridBagLayout();
+		textArea.setLayout(gbl);
+		//textArea.setPreferredSize(new Dimension(404, 69));
 		//contentPane.add(textArea);
 		
 		JScrollPane scroll = new JScrollPane (textArea, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 //		scroll.setSize(117, 23);
 		scroll.setBounds(23, 117, 404, 69);
+		textArea.setAutoscrolls(true);
 		contentPane.add(scroll);
 		btnRecalculate = new JButton("Recalculate");
 		btnRecalculate.setBounds(127, 214, 117, 29);
@@ -126,7 +129,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
 		
-		comboBox_2 = new JComboBox();
+		/*comboBox_2 = new JComboBox();
 		comboBox_2.setEditable(true);
 		comboBox_2.setBounds(58, 215, 52, 27);
 		comboBox_2.addItem('1');
@@ -135,36 +138,42 @@ public class SSSFrame extends JFrame implements ActionListener {
 		comboBox_2.addItem('4');
 		comboBox_2.addItem('5');
 		contentPane.add(comboBox_2);
-		
+		*/
 		JLabel lblRecoveredSecret = new JLabel("Recovered Secret");
 		lblRecoveredSecret.setBounds(264, 198, 142, 16);
 		contentPane.add(lblRecoveredSecret);
-		
-		JLabel lblThreshold = new JLabel("Recombine");
-		lblThreshold.setBounds(48, 198, 77, 16);
-		contentPane.add(lblThreshold);
 				
 	}
 	public void actionPerformed(ActionEvent e) {
 		StringBuilder builder;
 		if (e.getSource() == btnRecalculate) {
-			int recombine = Integer.parseInt(comboBox_2.getSelectedItem().toString());
+			//int recombine = Integer.parseInt(comboBox_2.getSelectedItem().toString());
+			checked.clear();
+			int recombine = 0;
+			/*if ( recombine < threshold) {
+				textField_1.setText("Too few shares.");
+			} else if ( recombine > numShares) {
+				textField_1.setText("Exceeded shares.");
+			} else {*/
+			for(int i = 0; i < sharesBox.length; i++){
+				if(sharesBox[i].isSelected()){
+					System.out.println(shares[i].getText());
+					checked.add(shares[i].getText());
+					recombine++;
+				}
+			}
 			if ( recombine < threshold) {
 				textField_1.setText("Too few shares.");
 			} else if ( recombine > numShares) {
 				textField_1.setText("Exceeded shares.");
-			} else {
-				for(int i = 0; i < sharesBox.length; i++){
-					if(sharesBox[i].isSelected()){
-						checked.add(shares[i].getText());
-					}
-				}
-                System.out.println(checked.toString());
+			}else{
+	            System.out.println(checked.toString());
 				BigInteger result = shamir.combine(checked);
 				String something = new String(result.toString());
 				textField_1.setText(something);
-				
 			}
+			
+			//}
 		}
 		if (e.getSource() == btnCalculate) {
             textArea.removeAll();
@@ -191,12 +200,24 @@ public class SSSFrame extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Shares cannot be less than threshold!");
 				//textArea.setText("Shares cannot be less than threshold!");
 			}else{
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+				int row;
 				//textArea.setText(builder.toString());
-				for(int j=0; j < numShares; j++){
-					textArea.add(shares[j]);
-					textArea.add(sharesBox[j]);
+				for(row=0; row < numShares; row++){
+					c.gridx = 0;
+					c.gridy = row;
+					textArea.add(shares[row], c);
+					c.gridx = 1;
+					c.gridy = row;
+					textArea.add(sharesBox[row],c );
 				}
-
+				JPanel fillPanel = new JPanel();
+				fillPanel.setPreferredSize(new Dimension(0, 0));
+				c.weighty = 1.0;
+				c.gridx = 0;
+				c.gridy = row;
+				textArea.add(fillPanel, c);
 			}
             textArea.revalidate();
 
