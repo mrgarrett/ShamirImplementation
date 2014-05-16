@@ -167,11 +167,16 @@ public class SSSFrame extends JFrame implements ActionListener {
 			}
 		}
 		if (e.getSource() == btnCalculate) {
-			numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
+            shares = null;
+            sharesBox = null;
+
+            numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
 			threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
 			Integer secret = Integer.parseInt(textField.getText());
 			BigInteger secretInt =  BigInteger.valueOf(secret.intValue());
-			shares = new JLabel[numShares];
+			shares = null;
+            shares = new JLabel[numShares];
+            sharesBox = null;
 			sharesBox = new JCheckBox[numShares];
 			
 			shamir = new Shamir(threshold, numShares, secretInt);
@@ -192,9 +197,11 @@ public class SSSFrame extends JFrame implements ActionListener {
 				for(int j=0; j < numShares; j++){
 					textArea.add(shares[j]);
 					textArea.add(sharesBox[j]);
-					textArea.revalidate();
 				}
+
 			}
+            textArea.revalidate();
+
         }
 	}
 		
