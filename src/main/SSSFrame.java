@@ -167,9 +167,7 @@ public class SSSFrame extends JFrame implements ActionListener {
 			}
 		}
 		if (e.getSource() == btnCalculate) {
-            shares = null;
-            sharesBox = null;
-
+            textArea.removeAll();
             numShares = Integer.parseInt(comboBox.getSelectedItem().toString());
 			threshold = Integer.parseInt(comboBox_1.getSelectedItem().toString());
 			Integer secret = Integer.parseInt(textField.getText());
